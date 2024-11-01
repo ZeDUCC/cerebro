@@ -308,6 +308,24 @@
                 <canvas id="skillRadar"></canvas>
             </div>
             <script>
+                let skillHardData = {
+                    coding: [50, 80],
+                    gym: [50, 20],
+                    sleep: [50, 39],
+                    school: [50],
+                    mindfulness: [50, 70],
+                    networking: [50]
+                };
+
+                let chartData = [
+                    skillHardData.coding.reduce((a, b) => a + b) / skillHardData.coding.length,
+                    skillHardData.gym.reduce((a, b) => a + b) / skillHardData.gym.length,
+                    skillHardData.sleep.reduce((a, b) => a + b) / skillHardData.sleep.length,
+                    skillHardData.school.reduce((a, b) => a + b) / skillHardData.school.length,
+                    skillHardData.mindfulness.reduce((a, b) => a + b) / skillHardData.mindfulness.length,
+                    skillHardData.networking.reduce((a, b) => a + b) / skillHardData.networking.length
+                ];
+
                 const ctx = document.getElementById('skillRadar').getContext('2d');
                 new Chart(ctx, {
                     type: 'radar',
@@ -315,7 +333,7 @@
                         labels: ['Coding', 'Gym', 'Sleep Schedule', 'School', 'Mindfulness', 'Networking'],
                         datasets: [{
                             label: 'Skills',
-                            data: [50, 50, 50, 50, 50, 50],
+                            data: chartData,
                             fill: true,
                             backgroundColor: 'rgba(155, 128, 255, 0.2)',
                             borderColor: 'rgba(155, 128, 255, 1)',
@@ -336,8 +354,14 @@
                                 },
                                 pointLabels: {
                                     color: 'white'
+                                },
+                                suggestedMin: 0,
+                                suggestedMax: 100,
+                                ticks: {
+                                    color: 'rgba(0, 0, 0, 0)',
+                                    backdropColor: 'rgba(0, 0, 0, 0)'
                                 }
-                            }
+                            },
                         },
                         plugins: {
                             legend: {
