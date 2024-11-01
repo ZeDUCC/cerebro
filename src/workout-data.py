@@ -2,30 +2,31 @@ from flask import Flask, jsonify
 import json
 
 workoutdata = {
-    "chest": {
-        "bench press": [100, 102, 105, 107, 110],
-        "chest flys": [100, 102, 105, 107, 110],
-        "incline bench press": [100, 102, 105, 107, 110],
-    },
-    "biceps": {
-        "bicep curls": [100, 102, 105, 107, 110],
-        "hammer curls": [100, 102, 105, 107, 110],
-    },
-    "triceps": {
-        "tricep pushdowns": [100, 102, 105, 107, 110],
-        "skull crushers": [100, 102, 105, 107, 110],
-    },
-    "back": {
-        "deadlift": [100, 102, 105, 107, 110],
-        "pullups": [100, 102, 105, 107, 110],
-        "rows": [100, 102, 105, 107, 110],
-    }
+    "chest": [
+        {"name": "Bench Press", "data": [100, 102, 105, 107, 110]},
+        {"name": "Chest Flys", "data": [100, 102, 105, 107, 110]},
+        {"name": "Incline Bench Press", "data": [100, 102, 105, 107, 110]}
+    ],
+    "biceps": [
+        {"name": "Bicep Curls", "data": [100, 102, 105, 107, 110]},
+        {"name": "Hammer Curls", "data": [100, 102, 105, 107, 110]}
+    ],
+    "triceps": [
+        {"name": "Tricep Pushdowns", "data": [100, 102, 105, 107, 110]},
+        {"name": "Skull Crushers", "data": [100, 102, 105, 107, 110]}
+    ],
+    "back": [
+        {"name": "Deadlift", "data": [100, 102, 105, 107, 110]},
+        {"name": "Pullups", "data": [100, 102, 105, 107, 110]},
+        {"name": "Rows", "data": [100, 102, 105, 107, 110]}
+    ]
 }
+
 app = Flask(__name__)
 
 @app.route('/workout-data', methods=['GET'])
 def get_workout_data():
-    return jsonify(workoutdata['chest']['bench press'])
+    return (workoutdata)
 
 if __name__ == '__main__':
     app.run(debug=True)
