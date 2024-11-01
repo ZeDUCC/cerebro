@@ -308,7 +308,7 @@
                 <canvas id="skillRadar"></canvas>
             </div>
             <script>
-                let skillHardData = {
+                let skillData = {
                     coding: [50, 80],
                     gym: [50, 20],
                     sleep: [50, 39],
@@ -317,13 +317,36 @@
                     networking: [50]
                 };
 
+                function saveData() {
+                    localStorage.setItem('skillData', JSON.stringify(skillData));
+                }
+
+                function loadData() {
+                    const saved = localStorage.getItem('skillData');
+                    return JSON.parse(saved);
+                }
+
+                function popData(skill) {
+                    skillData[skill].pop();
+                    saveData();
+                }
+
+                function pushData(skill, value) {
+                    skillData[skill].push(value);
+                    saveData();
+                }
+
+                pushData('coding', 80);
+
+                skillData = loadData();
+
                 let chartData = [
-                    skillHardData.coding.reduce((a, b) => a + b) / skillHardData.coding.length,
-                    skillHardData.gym.reduce((a, b) => a + b) / skillHardData.gym.length,
-                    skillHardData.sleep.reduce((a, b) => a + b) / skillHardData.sleep.length,
-                    skillHardData.school.reduce((a, b) => a + b) / skillHardData.school.length,
-                    skillHardData.mindfulness.reduce((a, b) => a + b) / skillHardData.mindfulness.length,
-                    skillHardData.networking.reduce((a, b) => a + b) / skillHardData.networking.length
+                    skillData.coding.reduce((a, b) => a + b) / skillData.coding.length,
+                    skillData.gym.reduce((a, b) => a + b) / skillData.gym.length,
+                    skillData.sleep.reduce((a, b) => a + b) / skillData.sleep.length,
+                    skillData.school.reduce((a, b) => a + b) / skillData.school.length,
+                    skillData.mindfulness.reduce((a, b) => a + b) / skillData.mindfulness.length,
+                    skillData.networking.reduce((a, b) => a + b) / skillData.networking.length
                 ];
 
                 const ctx = document.getElementById('skillRadar').getContext('2d');
