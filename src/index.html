@@ -90,131 +90,255 @@
             <div id="exercise-graphs" style="width: 100%; margin-top: 20px; display: flex; flex-direction: column; gap: 20px;"></div>
 
             <script>
-            const exerciseData = {
-                chest: [
-                    { name: 'Bench Press', data: [100, 105, 110, 115, 120, 125] },
-                    { name: 'Chest Flys', data: [30, 35, 35, 40, 40, 45] },
-                    { name: 'Incline Press', data: [80, 85, 90, 90, 95, 100] }
-                ],
-                biceps: [
-                    { name: 'Curls', data: [30, 35, 35, 40, 40, 45] },
-                    { name: 'Hammer Curls', data: [25, 30, 30, 35, 35, 40] }
-                ],
-                triceps: [
-                    { name: 'Skull Crushers', data: [40, 45, 45, 50, 50, 55] },
-                    { name: 'Tricep Dips', data: [20, 25, 25, 30, 30, 35] }
-                ],
-                shoulders: [
-                    { name: 'Shoulder Press', data: [60, 65, 65, 70, 70, 75] },
-                    { name: 'Lateral Raises', data: [15, 20, 20, 25, 25, 30] }
-                ],
-                forearms: [
-                    { name: 'Wrist Curls', data: [20, 25, 25, 30, 30, 35] },
-                    { name: 'Reverse Curls', data: [25, 30, 30, 35, 35, 40] }
-                ],
-                legs: [
-                    { name: 'Squats', data: [120, 125, 130, 135, 140, 145] },
-                    { name: 'Leg Press', data: [200, 205, 210, 215, 220, 225] }
-                ],
-                back: [
-                    { name: 'Deadlifts', data: [150, 155, 160, 165, 170, 175] },
-                    { name: 'Pull-ups', data: [10, 15, 15, 20, 20, 25] }
-                ]
-                // Add data for other muscle groups...
-            };
+                const exerciseData = {
+                    chest: [
+                        { name: 'Bench Press', data: [100, 105, 110, 115, 120, 125] },
+                        { name: 'Chest Flys', data: [30, 35, 35, 40, 40, 45] },
+                        { name: 'Incline Press', data: [80, 85, 90, 90, 95, 100] }
+                    ],
+                    biceps: [
+                        { name: 'Curls', data: [30, 35, 35, 40, 40, 45] },
+                        { name: 'Hammer Curls', data: [25, 30, 30, 35, 35, 40] }
+                    ],
+                    triceps: [
+                        { name: 'Skull Crushers', data: [40, 45, 45, 50, 50, 55] },
+                        { name: 'Tricep Dips', data: [20, 25, 25, 30, 30, 35] }
+                    ],
+                    shoulders: [
+                        { name: 'Shoulder Press', data: [60, 65, 65, 70, 70, 75] },
+                        { name: 'Lateral Raises', data: [15, 20, 20, 25, 25, 30] }
+                    ],
+                    forearms: [
+                        { name: 'Wrist Curls', data: [20, 25, 25, 30, 30, 35] },
+                        { name: 'Reverse Curls', data: [25, 30, 30, 35, 35, 40] }
+                    ],
+                    legs: [
+                        { name: 'Squats', data: [120, 125, 130, 135, 140, 145] },
+                        { name: 'Leg Press', data: [200, 205, 210, 215, 220, 225] }
+                    ],
+                    back: [
+                        { name: 'Deadlifts', data: [150, 155, 160, 165, 170, 175] },
+                        { name: 'Pull-ups', data: [10, 15, 15, 20, 20, 25] }
+                    ]
+                };
 
-            function delDataPoint(muscleGroup, index) {
-                // Remove the last data point
-                exerciseData[muscleGroup][index].data.pop();
-                
-                // Get the canvas ID
-                const canvasId = `${muscleGroup}-exercise-${index}`;
-                
-                // Get the chart instance and update it
-                const canvas = document.getElementById(canvasId);
-                const chart = Chart.getChart(canvas);
-                if (chart) {
-                    chart.data.datasets[0].data = exerciseData[muscleGroup][index].data;
-                    chart.update();
-                }
-            }
-
-            function showExercises(muscleGroup) {
-                // Reset button colors
-                document.querySelectorAll('.muscle-btn').forEach(btn => {
-                    btn.style.color = 'rgb(255, 255, 255, 0.3)';
-                });
-                
-                // Highlight selected button
-                event.target.style.color = 'white';
-                
-                // Clear previous graphs
-                const container = document.getElementById('exercise-graphs');
-                container.innerHTML = '';
-                
-                // First, create all canvas elements
-                exerciseData[muscleGroup].forEach((exercise, index) => {
+                function delDataPoint(muscleGroup, index) {
+                    // Remove the last data point
+                    exerciseData[muscleGroup][index].data.pop();
+                    
+                    // Get the canvas ID
                     const canvasId = `${muscleGroup}-exercise-${index}`;
-                    container.innerHTML += `
-                        <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; height: 600px">
-                            <div style="display: flex; flex-direction: row; width: 100%; justify-content: space-between">
-                                <h3 style="color: white; margin-bottom: 10px;">${exercise.name}</h3>
-                                <button onclick="delDataPoint('${muscleGroup}', ${index})" style="color: rgb(255, 255, 255, 0.5); border-radius: 10px; padding: 10px; background-color: rgba(34, 36, 40, 0.1)">Delete last datapoint</button>
-                            </div>
-                            <canvas id="${canvasId}" style="padding: 60px"></canvas>
-                        </div>
-                    `;
-                });
+                    
+                    // Get the chart instance and update it
+                    const canvas = document.getElementById(canvasId);
+                    const chart = Chart.getChart(canvas);
+                    if (chart) {
+                        chart.data.datasets[0].data = exerciseData[muscleGroup][index].data;
+                        chart.update();
+                    }
+                }
 
-                // Then, create charts after a small delay to ensure DOM is ready
-                setTimeout(() => {
+                function showExercises(muscleGroup) {
+                    // Reset button colors
+                    document.querySelectorAll('.muscle-btn').forEach(btn => {
+                        btn.style.color = 'rgb(255, 255, 255, 0.3)';
+                    });
+                    
+                    // Highlight selected button
+                    event.target.style.color = 'white';
+                    
+                    // Clear previous graphs
+                    const container = document.getElementById('exercise-graphs');
+                    container.innerHTML = '';
+                    
+                    // First, create all canvas elements
                     exerciseData[muscleGroup].forEach((exercise, index) => {
                         const canvasId = `${muscleGroup}-exercise-${index}`;
-                        const ctx = document.getElementById(canvasId).getContext('2d');
-                        new Chart(ctx, {
-                            type: 'line',
-                            data: {
-                                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
-                                datasets: [{
-                                    label: '',
-                                    data: exercise.data,
-                                    borderColor: 'rgba(155, 128, 255, 1)',
-                                    backgroundColor: 'rgba(155, 128, 255, 0.2)',
-                                    tension: 0.3,
-                                    fill: true
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                scales: {
-                                    y: {
-                                        beginAtZero: true,
-                                        grid: {
-                                            color: 'rgba(255, 255, 255, 0.1)'
+                        container.innerHTML += `
+                            <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; height: 600px">
+                                <div style="display: flex; flex-direction: row; width: 100%; justify-content: space-between">
+                                    <h3 style="color: white; margin-bottom: 10px;">${exercise.name}</h3>
+                                    <button onClick="delDataPoint('${muscleGroup}', ${index})" style="color: rgb(255, 255, 255, 0.5); border-radius: 10px; padding: 10px; background-color: rgba(34, 36, 40, 0.1)">Delete last datapoint</button>
+                                </div>
+                                <canvas id="${canvasId}" style="padding: 60px"></canvas>
+                            </div>
+                        `;
+                    });
+
+                    // Then, create charts after a small delay to ensure DOM is ready
+                    setTimeout(() => {
+                        exerciseData[muscleGroup].forEach((exercise, index) => {
+                            const canvasId = `${muscleGroup}-exercise-${index}`;
+                            const ctx = document.getElementById(canvasId).getContext('2d');
+                            new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                                    datasets: [{
+                                        label: '',
+                                        data: exercise.data,
+                                        borderColor: 'rgba(155, 128, 255, 1)',
+                                        backgroundColor: 'rgba(155, 128, 255, 0.2)',
+                                        tension: 0.3,
+                                        fill: true
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            grid: {
+                                                color: 'rgba(255, 255, 255, 0.1)'
+                                            },
+                                            ticks: {
+                                                color: 'white'
+                                            }
                                         },
-                                        ticks: {
-                                            color: 'white'
-                                        }
-                                    },
-                                    x: {
-                                        grid: {
-                                            color: 'rgba(255, 255, 255, 0.1)'
-                                        },
-                                        ticks: {
-                                            color: 'white'
+                                        x: {
+                                            grid: {
+                                                color: 'rgba(255, 255, 255, 0.1)'
+                                            },
+                                            ticks: {
+                                                color: 'white'
+                                            }
                                         }
                                     }
                                 }
-                            }
+                            });
                         });
-                    });
-                }, 100);
-            }
+                    }, 100);
+                }
 
-            
-            // Show chest exercises by default
-            showExercises('chest');
+                
+                // Show chest exercises by default
+                showExercises('chest');
+
+                // let exerciseData = {};
+
+                // // Load data when the workout screen is initialized
+                // async function initWorkoutData() {
+                //     exerciseData = await window.workoutData.load();
+                //     showExercises('chest'); // Show initial data
+                // }
+
+                // function delDataPoint(muscleGroup, index) {
+                //     // Remove the last data point
+                //     exerciseData[muscleGroup][index].data.pop();
+                    
+                //     // Save the updated data
+                //     window.workoutData.save(exerciseData);
+                    
+                //     // Update the chart
+                //     const canvasId = `${muscleGroup}-exercise-${index}`;
+                //     const canvas = document.getElementById(canvasId);
+                //     const chart = Chart.getChart(canvas);
+                //     if (chart) {
+                //         chart.data.datasets[0].data = exerciseData[muscleGroup][index].data;
+                //         chart.update();
+                //     }
+                // }
+
+                // // Add function to add new data point
+                // function addDataPoint(muscleGroup, index, value) {
+                //     exerciseData[muscleGroup][index].data.push(value);
+                //     window.workoutData.save(exerciseData);
+                //     showExercises(muscleGroup); // Refresh the view
+                // }
+
+                // // Add this HTML to your workout screen for adding new data points
+                // function addDataPointForm(muscleGroup, index) {
+                //     return `
+                //         <div style="margin-top: 10px">
+                //             <input type="number" id="newValue-${muscleGroup}-${index}" 
+                //                 style="background: rgba(255,255,255,0.1); color: white; border: none; padding: 5px; border-radius: 5px">
+                //             <button onclick="addDataPoint('${muscleGroup}', ${index}, document.getElementById('newValue-${muscleGroup}-${index}').value)"
+                //                     style="color: white; background: rgba(255,255,255,0.2); border: none; padding: 5px 10px; border-radius: 5px; margin-left: 5px">
+                //                 Add Data Point
+                //             </button>
+                //         </div>
+                //     `;
+                // }
+
+                // // Update your showExercises function to include the form
+                // function showExercises(muscleGroup) {
+                //     document.querySelectorAll('.muscle-btn').forEach(btn => {
+                //         btn.style.color = 'rgb(255, 255, 255, 0.3)';
+                //     });
+                    
+                //     // Highlight selected button
+                //     event.target.style.color = 'white';
+                    
+                //     // Clear previous graphs
+                //     const container = document.getElementById('exercise-graphs');
+                //     container.innerHTML = '';
+                //     exerciseData[muscleGroup].forEach((exercise, index) => {
+                //         const canvasId = `${muscleGroup}-exercise-${index}`;
+                //         container.innerHTML += `
+                //             <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; height: 600px">
+                //                 <div style="display: flex; flex-direction: row; width: 100%; justify-content: space-between">
+                //                     <h3 style="color: white; margin-bottom: 10px;">${exercise.name}</h3>
+                //                     <div>
+                //                         ${addDataPointForm(muscleGroup, index)}
+                //                         <button onClick="delDataPoint('${muscleGroup}', ${index})" 
+                //                                 style="color: rgb(255, 255, 255, 0.5); border-radius: 10px; padding: 10px; background-color: rgba(34, 36, 40, 0.1)">
+                //                             Delete last datapoint
+                //                         </button>
+                //                     </div>
+                //                 </div>
+                //                 <canvas id="${canvasId}" style="padding: 60px"></canvas>
+                //             </div>
+                //         `;
+                //     });
+
+                //     setTimeout(() => {
+                //         exerciseData[muscleGroup].forEach((exercise, index) => {
+                //             const canvasId = `${muscleGroup}-exercise-${index}`;
+                //             const ctx = document.getElementById(canvasId).getContext('2d');
+                //             new Chart(ctx, {
+                //                 type: 'line',
+                //                 data: {
+                //                     labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                //                     datasets: [{
+                //                         label: '',
+                //                         data: exercise.data,
+                //                         borderColor: 'rgba(155, 128, 255, 1)',
+                //                         backgroundColor: 'rgba(155, 128, 255, 0.2)',
+                //                         tension: 0.3,
+                //                         fill: true
+                //                     }]
+                //                 },
+                //                 options: {
+                //                     responsive: true,
+                //                     maintainAspectRatio: false,
+                //                     scales: {
+                //                         y: {
+                //                             beginAtZero: true,
+                //                             grid: {
+                //                                 color: 'rgba(255, 255, 255, 0.1)'
+                //                             },
+                //                             ticks: {
+                //                                 color: 'white'
+                //                             }
+                //                         },
+                //                         x: {
+                //                             grid: {
+                //                                 color: 'rgba(255, 255, 255, 0.1)'
+                //                             },
+                //                             ticks: {
+                //                                 color: 'white'
+                //                             }
+                //                         }
+                //                     }
+                //                 }
+                //             });
+                //         });
+                //     }, 100);
+                // }
+
+                // // Initialize the data when the page loads
+                // document.addEventListener('DOMContentLoaded', initWorkoutData);
             </script>
         </div>
 
