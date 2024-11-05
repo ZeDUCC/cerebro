@@ -399,7 +399,101 @@
         </div>
 
         <div id="achievements-screen" class="screen" style="display: none;">
-            Achievements Screen
+            <div id="achievements-container" style="width: 100%; display: flex; flex-direction: column; justify-content: space-between;"></div>
+            <script>
+                let achievements = {};
+
+                function initializeAchievements() {
+                    const skillData = JSON.parse(localStorage.getItem('skillData')) || {};
+                    for (const category in skillData) {
+                        if (!achievements[category]) {
+                            achievements[category] = [];
+                        }
+                    }
+                    saveAchievements();
+                }
+
+                function addAchievement(category, name, points) {
+                    if (achievements[category]) {
+                        achievements[category].push({ name, points });
+                    } else {
+                        achievements[category] = [{ name, points }];
+                    }
+                    saveAchievements();
+                    displayAchievements();
+                }
+
+                function saveAchievements() {
+                    localStorage.setItem('achievements', JSON.stringify(achievements));
+                }
+
+                function loadAchievements() {
+                    const saved = localStorage.getItem('achievements');
+                    if (saved) {
+                        achievements = JSON.parse(saved);
+                    }
+                }
+
+                function displayAchievements() {
+                    const container = document.getElementById('achievements-container');
+                    container.innerHTML = '';
+                    for (const category in achievements) {
+                        container.innerHTML += `
+                            <div style="background-color: rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; overflow-x: scroll; padding: 20px; margin-bottom: 50px; border-radius: 25px; scrollbar-width: none; -ms-overflow-style: none;">
+                                <style>
+                                    /* Hide scrollbar for Chrome, Safari and Opera */
+                                    .scroll-container::-webkit-scrollbar {
+                                        display: none;
+                                    }
+
+                                    /* Hide scrollbar for IE, Edge and Firefox */
+                                    .scroll-container {
+                                        -ms-overflow-style: none;  /* IE and Edge */
+                                        scrollbar-width: none;  /* Firefox */
+                                    }
+                                </style>
+                                <div style="width: 100%; justify-content: space-between">
+                                    <div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 20px">
+                                        <div style="color: white; margin-bottom: 15px;"><strong style="color: white">${category}</strong></div>
+                                        <div>
+                                            <input type="number" id="points-${category}"
+                                                placeholder="Points"
+                                                style="width: 100px; font-family: 'Space Grotesk'; margin-right: 10px; padding: 8px; border-radius: 5px; background: rgba(34, 36, 40, 0.3); color: white; border: none;">
+                                            <input
+                                                placeholder="Name" id="name-${category}"
+                                                style="width: 100px; font-family: 'Space Grotesk'; margin-right: 10px; padding: 8px; border-radius: 5px; background: rgba(34, 36, 40, 0.3); color: white; border: none;">
+                                            <button onclick="addAchievement('${category}', document.getElementById('name-${category}').value, parseInt(document.getElementById('points-${category}').value)" style="color: white; background: rgba(34, 36, 40, 0.3); border: none; padding: 8px 16px; border-radius: 5px">
+                                                Add Achievement
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; flex-direction: row">
+                                ${achievements[category].map(achievement => `
+                                    <div style="background-color: rgba(0, 0, 0, 0.1); padding: 20px; width: 30%; border-radius: 25px; margin-right: 50px; justify-items: center">
+                                        <h3 style="padding: 10px; text-align: center"><strong style="color: white; font-size: 125%;">${achievement.name}</strong></h3>
+                                        <p style="color: white; text-align: center; padding: 10px;">${achievement.points} points</p>
+                                        <button style="text-align: center; padding: 10px; background-color: rgba(0, 0, 0, 0.4); border-radius: 10px">Mark complete</button>
+                                    </div>
+                                `).join('')}
+                                </div>
+                            </div>
+                        `
+                    }
+
+                }
+
+                addAchievement('coding', 'Completed 10 coding challenges', 50);
+                addAchievement('coding', 'Completed 20 coding challenges', 100);
+                addAchievement('gym', 'Lifted 1000 lbs', 50);
+                addAchievement('gym', 'Lifted 2000 lbs', 100);
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    loadAchievements();
+                    initializeAchievements();
+                    // You can add code here to display achievements on the screen if needed
+                });
+            </script>
         </div>
     </div>
 
