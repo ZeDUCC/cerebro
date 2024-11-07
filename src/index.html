@@ -205,7 +205,7 @@
                     if (chart) {
                         chart.data.labels = Array.from(
                             { length: exerciseData[muscleGroup][index].data.length }, 
-                            (_, i) => `Set ${i + 1}`
+                            (_, i) => new Date().toLocaleDateString()
                         );
                         chart.data.datasets[0].data = exerciseData[muscleGroup][index].data;
                         chart.update();
@@ -410,7 +410,6 @@
                             achievements[category] = [];
                         }
                     }
-                    saveAchievements();
                 }
 
                 function addAchievement(category, name, points) {
@@ -457,19 +456,12 @@
                     try {
                         // Verify achievements object exists and has data
                         if (!achievements || Object.keys(achievements).length === 0) {
-                            console.warn('No achievements to save');
+                            alert('No achievements to save');
                             achievements = {};
                         }
 
                         // Save to localStorage with error checking
                         localStorage.setItem('achievements', JSON.stringify(achievements));
-                        console.log('Achievements saved:', achievements);
-                        
-                        // Verify save worked
-                        const saved = localStorage.getItem('achievements');
-                        if (!saved) {
-                            throw new Error('Save verification failed');
-                        }
                     } catch (error) {
                         console.error('Error saving achievements:', error);
                         alert('Failed to save achievements');
@@ -550,11 +542,6 @@
                         `;
                     }
                 }
-
-                addAchievement('coding', 'Completed 10 coding challenges', 50);
-                addAchievement('coding', 'Completed 20 coding challenges', 100);
-                addAchievement('gym', 'Lifted 1000 lbs', 50);
-                addAchievement('gym', 'Lifted 2000 lbs', 100);
 
                 document.addEventListener('DOMContentLoaded', () => {
                     loadAchievements();
