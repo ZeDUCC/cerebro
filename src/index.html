@@ -41,7 +41,7 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 10px;">
               <path d="M12 22v-7l-2-2M17 8v.8A6 6 0 0 1 13.8 20H10A6.5 6.5 0 0 1 7 8a5 5 0 0 1 10 0ZM14 14l-2 2" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <h1 style="color: #f3f4f8; margin-left: 3px">Skill Tree</h1>
+            <h1 style="color: #f3f4f8; margin-left: 3px">Skill Map</h1>
           </button>
           <button id="achievements-button" style="display: flex; flex-direction: row; color: #222428; opacity: 70%; color: #f3f4f8; height: 50px; border-radius: 15px; margin: 10px; padding: 10px; text-align: left; display: flex; align-items: center;">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 10px;">
@@ -258,7 +258,7 @@
                                         <input type="number" 
                                             id="weight-${muscleGroup}-${index}"
                                             placeholder="Weight"
-                                            style="width: 100px; padding: 8px; border-radius: 5px; background: rgba(34, 36, 40, 0.3); color: white; border: none;">
+                                            style="width: 20%; padding: 8px; border-radius: 5px; background: rgba(34, 36, 40, 0.3); color: white; border: none;">
                                         <button onclick="addDataPoint('${muscleGroup}', ${index}, document.getElementById('weight-${muscleGroup}-${index}').value)"
                                                 style="color: white; background: rgba(34, 36, 40, 0.3); border: none; padding: 8px 16px; border-radius: 5px">
                                             Add Weight
@@ -300,7 +300,20 @@
         </div>
 
         <div id="llms-screen" class="screen" style="display: none;">
-            LLMs Screen
+            <div style="width: 80%;  margin-left: 10%; margin-bottom: 20px; background-color: rgb(34, 36, 40, 0.3);border-radius: 10px; display: flex; flex-direction: row; justify-content: space-between; padding-left: 25px; padding-right: 25px">
+                <button style="color: white; padding: 10px; text-align: center; background: none; border: none; cursor: pointer;">Qwen2</button>
+                <button style="color: rgb(255, 255, 255, 0.3); padding: 10px; text-align: center; background: none; border: none; cursor: pointer;">Moondream</button>
+                <button style="color: rgb(255, 255, 255, 0.3); padding: 10px; text-align: center; background: none; border: none; cursor: pointer;">Phi3</button>
+                <button style="color: rgb(255, 255, 255, 0.3); padding: 10px; text-align: center; background: none; border: none; cursor: pointer;">Llama3</button>
+            </div>
+            <div id="chat-box" style="width: 100%; height: 500px; background: rgba(34, 36, 40, 0.3); border-radius: 10px; padding: 20px; margin-bottom: 20px; overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none;">
+            </div>
+            <style>
+                #chat-box::-webkit-scrollbar {
+                    display: none;
+                }
+            </style>
+            <input placeholder="Your input here" min="1" style="width: 80%; margin-left: 10%; padding: 8px; border-radius: 10px; background: rgba(34, 36, 40, 0.3); font-family: 'Space Grotesk'; color: white; border: none; padding: 10px;" onfocus="this.style.outline='none';">
         </div>
 
         <div id="skill-tree-screen" class="screen">
@@ -309,7 +322,7 @@
             </div>
             <script>
                 let skillData = {
-                    coding: [50, 80],
+                    coding: [50],
                     gym: [50, 20],
                     sleep: [50, 39],
                     school: [50],
@@ -336,17 +349,15 @@
                     saveData();
                 }
 
-                pushData('coding', 80);
-
                 skillData = loadData();
 
                 let chartData = [
-                    skillData.coding.reduce((a, b) => a + b) / skillData.coding.length,
-                    skillData.gym.reduce((a, b) => a + b) / skillData.gym.length,
-                    skillData.sleep.reduce((a, b) => a + b) / skillData.sleep.length,
-                    skillData.school.reduce((a, b) => a + b) / skillData.school.length,
-                    skillData.mindfulness.reduce((a, b) => a + b) / skillData.mindfulness.length,
-                    skillData.networking.reduce((a, b) => a + b) / skillData.networking.length
+                    skillData.coding.reduce((a, b) => a + b),
+                    skillData.gym.reduce((a, b) => a + b),
+                    skillData.sleep.reduce((a, b) => a + b),
+                    skillData.school.reduce((a, b) => a + b),
+                    skillData.mindfulness.reduce((a, b) => a + b),
+                    skillData.networking.reduce((a, b) => a + b),
                 ];
 
                 const ctx = document.getElementById('skillRadar').getContext('2d');
@@ -440,10 +451,38 @@
                 }
 
                 function toggleAchievement(category, index) {
-                    achievements[category][index].completed = !achievements[category][index].completed;
-                    achievements[category][index].dateCompleted = new Date().toISOString();
+                    const achievement = achievements[category][index];
+                    achievement.completed = !achievement.completed;
+                    achievement.dateCompleted = new Date().toISOString();
+
+                    if (achievement.completed) {
+                        skillData[category].push(achievement.points);
+                    } else {
+                        const pointsIndex = skillData[category].indexOf(achievement.points);
+                        if (pointsIndex > -1) {
+                            skillData[category].splice(pointsIndex, 1);
+                        }
+                    }
+
                     saveAchievements();
+                    saveData();
                     displayAchievements();
+                    updateSkillChart();
+                }
+
+                function updateSkillChart() {
+                    const chart = Chart.getChart('skillRadar');
+                    if (chart) {
+                        chart.data.datasets[0].data = [
+                            skillData.coding.reduce((a, b) => a + b),
+                            skillData.gym.reduce((a, b) => a + b),
+                            skillData.sleep.reduce((a, b) => a + b),
+                            skillData.school.reduce((a, b) => a + b),
+                            skillData.mindfulness.reduce((a, b) => a + b),
+                            skillData.networking.reduce((a, b) => a + b)
+                        ];
+                        chart.update();
+                    }
                 }
 
                 function deleteAchievement(category, index) {
@@ -454,13 +493,11 @@
 
                 function saveAchievements() {
                     try {
-                        // Verify achievements object exists and has data
                         if (!achievements || Object.keys(achievements).length === 0) {
                             alert('No achievements to save');
                             achievements = {};
                         }
 
-                        // Save to localStorage with error checking
                         localStorage.setItem('achievements', JSON.stringify(achievements));
                     } catch (error) {
                         console.error('Error saving achievements:', error);
