@@ -22,7 +22,7 @@ To get started with Cerebro, follow these steps:
 
 1. **Clone the repository**:
     ```sh
-    git clone https://github.com/your-username/cerebro.git
+    git clone https://github.com/jsiva04/cerebro.git
     cd cerebro
     ```
 
